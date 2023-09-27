@@ -2,10 +2,12 @@ const $startGameButton = document.querySelector(".start-quiz")
 const $questionsContainer=document.querySelector(".questions-container")
 const $answersContainer=document.querySelector(".answers-container")
 const $questionText=document.querySelector(".question")
+const $nextQuestionButton=document.querySelector(".next-question")
 
 
 $startGameButton.addEventListener("click", startGame)
-
+//criando um evento para a proxima pergunta
+$nextQuestionButton.addEventListener("click", displayNextQuestion)
 //variavel auxiliar
 let currentQuestionIndex = 0
 
@@ -21,12 +23,61 @@ function displayNextQuestion() {
     while($answersContainer.firstChild){
         $answersContainer.removeChild($answersContainer.firstChild)
     }
+
+    //Acessando o body para mudar a cor, removendo todas as classes
+    document.body.removeAttribute("class")
+    //Adicionando novamento o hide no botão avançar após responder
+    $nextQuestionButton.classList.add("hide")
+
     //pegando a primeira questão e mostrando na tela
     $questionText.textContent = questions[currentQuestionIndex].questions
+
+    //pegando todas as respostas e criando um novo botão para cada uma das respostas.
+    questions[currentQuestionIndex].answers.forEach(answer => {
+        const newAnswer = document.createElement("button")
+        //colocando a classe button e answer do html
+        newAnswer.classList.add("button", "answer")
+        //Pegando o texto das respostas
+        newAnswer.textContent = answer.text
+        //Verificando se esta correta, para saber se usuário acertou a resposta que escolheu
+        if(answer.correct){
+            newAnswer.dataset.correct = answer.correct
+        }
+        //Adicionando o elemento filho
+        $answersContainer.appendChild(newAnswer)
+
+        newAnswer.addEventListener("click", selectAnswer)
+    })
 }
 
+//função que detectar se o usuário escolheu a resposta correta
+function selectAnswer(event) {
+        const answerClicked = (event.target)
 
+        //Quando a resposta for correta irá ficar com fundo verde errado com fundo vermelho
+        if(answerClicked.dataset.correct){
+            document.body.classList.add("correct")
+        } else{
+            document.body.classList.add("incorrect")
+        }
 
+        //botão ficará verde quando for a correta
+        document.querySelectorAll(".answer").forEach(button =>{
+            if(button.dataset.correct){
+                button.classList.add("correct")
+            } else{
+                button.classList.add("incorrect")
+            }
+
+            //Para o usuário não clicar em duas resposta 
+            button.disabled = true
+        })
+
+        //Fazendo o botão de próxima pergunta 
+        $nextQuestionButton.classList.remove("hide")
+        //Acessando a proxima pergunta
+        currentQuestionIndex++
+}
 
 
 
