@@ -49,7 +49,7 @@ body{
             text-align: center;  
 }
 
-.respostas-container{
+.answers-container{
     width:100%;
     display: grid;
     grid-template-columns:1fr 1fr; /*fará com que tenha duas colunas nos botões de resposta e com mesmo tamanho*/
