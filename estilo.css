@@ -97,3 +97,13 @@ button{
 .incorrect{
     background-color: #a10101;
 }
+
+.mensagem-final{
+    font-size: 25px;
+    text-align: center;
+}
+
+.mensagem-final span{
+    display: block;
+    margin-top: 8px;
+}

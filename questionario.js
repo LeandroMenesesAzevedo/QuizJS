@@ -10,6 +10,7 @@ $startGameButton.addEventListener("click", startGame)
 $nextQuestionButton.addEventListener("click", displayNextQuestion)
 //variavel auxiliar
 let currentQuestionIndex = 0
+let totalCorrect = 0 // total de respostas certas
 
 function startGame() {
     $startGameButton.classList.add("hide")
@@ -18,17 +19,11 @@ function startGame() {
 }
 
 function displayNextQuestion() {
-    //Enquanto a variavel $respostacontainer tiver um filho ele irá remover até que não tenha nenhum filho
+    resetState()
 
-    while($answersContainer.firstChild){
-        $answersContainer.removeChild($answersContainer.firstChild)
+    if(questions.length == currentQuestionIndex){
+        return finishGame()
     }
-
-    //Acessando o body para mudar a cor, removendo todas as classes
-    document.body.removeAttribute("class")
-    //Adicionando novamento o hide no botão avançar após responder
-    $nextQuestionButton.classList.add("hide")
-
     //pegando a primeira questão e mostrando na tela
     $questionText.textContent = questions[currentQuestionIndex].questions
 
@@ -50,6 +45,19 @@ function displayNextQuestion() {
     })
 }
 
+function resetState(){
+        //Enquanto a variavel $respostacontainer tiver um filho ele irá remover até que não tenha nenhum filho
+
+        while($answersContainer.firstChild){
+            $answersContainer.removeChild($answersContainer.firstChild)
+        }
+    
+        //Acessando o body para mudar a cor, removendo todas as classes
+        document.body.removeAttribute("class")
+        //Adicionando novamento o hide no botão avançar após responder
+        $nextQuestionButton.classList.add("hide")
+}
+
 //função que detectar se o usuário escolheu a resposta correta
 function selectAnswer(event) {
         const answerClicked = (event.target)
@@ -57,6 +65,7 @@ function selectAnswer(event) {
         //Quando a resposta for correta irá ficar com fundo verde errado com fundo vermelho
         if(answerClicked.dataset.correct){
             document.body.classList.add("correct")
+            totalCorrect++
         } else{
             document.body.classList.add("incorrect")
         }
@@ -79,6 +88,37 @@ function selectAnswer(event) {
         currentQuestionIndex++
 }
 
+function finishGame(){
+        const totalQuestion = questions.length
+        const performace = Math.floor(totalCorrect * 100/ totalQuestion)
+
+        let message = ""
+
+        switch(true){
+            case (performace >= 90):
+                message ="Excelente :D"
+            break
+            
+            case (performace >= 70):
+                message= "Muito Bom :D"
+            break
+
+            case(performace >= 50):
+                message= "Bom"
+            break
+            default:
+            message ="Pode melhorar"
+        }
+
+        $questionsContainer.innerHTML= 
+        `
+           <p class="mensagem-final">
+                Você acertou ${totalCorrect} de ${totalQuestion} questões!
+                <span> Resultado ${message}</span>
+            </p>
+            <button onclick=window.location.reload() class= "button"> Refazer teste</button>
+         `
+}
 
 
 
